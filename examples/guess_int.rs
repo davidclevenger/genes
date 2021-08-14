@@ -10,23 +10,23 @@ struct S {
 impl Target for S {
     fn score(&self, genes: &Genes) -> f64 {
         //cast genes to u32
-        let guess = genes.g64(0);
+        let guess = genes.g32(0);
 
         return f64::abs(guess as f64 - self.actual as f64)
     }
 }
 
 fn main() {
-    let target = S { actual: std::u64::MAX };
+    let target = S { actual: 0xBEEFBEEF };
     let mut opt = GeneticOptimizer::new(100, 64, 0.2, target);
 
     for _ in 0..100 {
         opt.step();
-        let guess = opt.best().g64(0);
+        let guess = opt.best().g32(0);
         println!("Actual: {} |  Best guess: {} | % Difference: {:.6}", 
-            std::u64::MAX, 
+            0xBEEFBEEFu32, 
             guess, 
-            ((std::u64::MAX - guess) as f64 / std::u64::MAX as f64) * 100.0
+            (1.0 - (guess as f64 / 0xBEEFBEEFu32 as f64)) * 100.0
         );
     }
 }
