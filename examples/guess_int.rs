@@ -8,7 +8,7 @@ struct S {
 }
 
 impl Target for S {
-    fn score(&self, genes: &Genes) -> f64 {
+    fn score(&mut self, genes: &Genes) -> f64 {
         //cast genes to u32
         let guess = genes.g32(0);
 

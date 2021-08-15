@@ -4,7 +4,7 @@ use rand::{Rng, SeedableRng};
 use rand::rngs::SmallRng;
 
 pub trait Target {
-    fn score(&self, genes: &Genes) -> f64;
+    fn score(&mut self, genes: &Genes) -> f64;
 }
 
 #[derive(Clone)]
@@ -278,7 +278,7 @@ impl<T: Target> GeneticOptimizer<T>{
     }
 
     /// the genes of the best scoring individual
-    pub fn best(&self) -> &Genes {
+    pub fn best(&mut self) -> &Genes {
         let mut best_score: f64 = -1.0;
         let mut best: &Individual = &self.population[0];
 
