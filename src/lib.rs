@@ -18,7 +18,7 @@ struct Individual {
 }
 
 /// API entrypoint
-pub struct GeneticOptimizer<T: Target> {
+pub struct Optimizer<T: Target> {
     population: Vec<Individual>,
     n: u32,
     mutation_rate: f64,
@@ -211,8 +211,8 @@ impl Individual {
     }
 }
 
-impl<T: Target> GeneticOptimizer<T>{
-    pub fn new(size: u32, n: u32, mutation_rate: f64, target: T) -> GeneticOptimizer<T> {
+impl<T: Target> Optimizer<T>{
+    pub fn new(size: u32, n: u32, mutation_rate: f64, target: T) -> Optimizer<T> {
         let mut population = Vec::with_capacity(size as usize);
 
         let mut rng = SmallRng::from_entropy();
@@ -229,7 +229,7 @@ impl<T: Target> GeneticOptimizer<T>{
         }
 
         // reuse the rng created above
-        return GeneticOptimizer {
+        return Optimizer {
             population,
             n,
             mutation_rate,

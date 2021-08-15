@@ -1,6 +1,6 @@
 extern crate genes;
 
-use genes::{GeneticOptimizer, Target, Genes};
+use genes::{Optimizer, Target, Genes};
 
 #[derive(Clone)]
 struct S {
@@ -18,7 +18,7 @@ impl Target for S {
 
 fn main() {
     let target = S { actual: 0xBEEFBEEF };
-    let mut opt = GeneticOptimizer::new(100, 64, 0.2, target);
+    let mut opt = Optimizer::new(100, 64, 0.2, target);
 
     for _ in 0..100 {
         opt.step();

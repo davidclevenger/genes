@@ -1,5 +1,5 @@
 extern crate genes;
-use genes::{GeneticOptimizer, Target, Genes};
+use genes::{Optimizer, Target, Genes};
 
 
 use std::{env, path::Path};
@@ -75,7 +75,7 @@ fn main() {
     };
 
     // each pixel has 3 u8 components (24 bits)
-    let mut opt = GeneticOptimizer::new(100000, rows * columns * 32, 0.2, tgt);
+    let mut opt = Optimizer::new(100000, rows * columns * 32, 0.2, tgt);
 
 
 
