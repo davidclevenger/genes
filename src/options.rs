@@ -1,6 +1,6 @@
 pub enum TargetType {
-    MINIMIZE,
-    MAXIMIZE
+    Minimize,
+    Maximize
 }
 
 pub enum SelectionMethod {
@@ -10,7 +10,7 @@ pub enum SelectionMethod {
     WeightedTournament
 }
 pub enum CrossoverMethod {
-    RANDOM,
-    BARRIER,
-    DOUBLEBARRIER
+    Random,
+    Barrier,
+    DoubleBarrier
 }
