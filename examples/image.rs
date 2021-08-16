@@ -1,5 +1,5 @@
 extern crate genes;
-use genes::{Optimizer, Target, Genes};
+use genes::{OptimizerBuilder, Target, genes::Genes};
 
 
 use std::{env, path::Path};
@@ -66,7 +66,7 @@ fn main() {
     let img = image::open(path).unwrap();
     let (rows, columns) = img.dimensions();
 
-    let tgt = ApproxImage {
+    let target = ApproxImage {
         actual: img.clone()
     };
 
@@ -75,9 +75,12 @@ fn main() {
     };
 
     // each pixel has 3 u8 components (24 bits)
-    let mut opt = Optimizer::new(100000, rows * columns * 32, 0.2, tgt);
-
-
+    let mut opt = OptimizerBuilder::new()
+    .size(100000)
+    .n(rows * columns * 32)
+    .mutation_rate(0.2)
+    .target(target)
+    .build();
 
     for s in 0..20 {
         println!("step: {}", s);

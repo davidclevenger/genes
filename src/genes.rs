@@ -1,5 +1,5 @@
 #[derive(Clone)]
-pub(crate) struct Genes {
+pub struct Genes {
     inner: Vec<u8>
 }
 
