@@ -9,12 +9,13 @@ pub mod options;
 
 use genes::*;
 use individual::*;
+use options::*;
 
 const DEFAULT_POP_SIZE: u32 = 100;
 const DEFAULT_MUT_RATE: f64 = 0.05;
-const DEFAULT_TGT_TYPE: options::TargetType = options::TargetType::MAXIMIZE;
-const DEFAULT_SEL_METH: options::SelectionMethod = options::SelectionMethod::Weighted;
-const DEFAULT_CRS_METH: options::CrossoverMethod = options::CrossoverMethod::BARRIER;
+const DEFAULT_TGT_TYPE: TargetType = TargetType::Maximize;
+const DEFAULT_SEL_METH: SelectionMethod = SelectionMethod::Weighted;
+const DEFAULT_CRS_METH: CrossoverMethod = CrossoverMethod::Barrier;
 
 pub trait Target {
     fn score(&mut self, genes: &Genes) -> f64;
@@ -127,13 +128,48 @@ impl<T: Target> Optimizer<T>{
         //random crossover
         let mut c = p1.clone();
 
-        for idx in 0..self.n {
-            match self.rng.gen_bool(0.5) {
-                true => if p1.get(idx) == 1 { c.set(idx); } else { c.clear(idx); },
-                false => if p2.get(idx) == 1 { c.set(idx); } else { c.clear(idx); },
-            }
+        match self.crossover_method {
+            CrossoverMethod::Random => { 
+                for idx in 0..self.n {
+                    match self.rng.gen_bool(0.5) {
+                        true => if p1.get(idx) == 1 { c.set(idx); } else { c.clear(idx); },
+                        false => if p2.get(idx) == 1 { c.set(idx); } else { c.clear(idx); },
+                    }
+                }
+            },
+            CrossoverMethod::Barrier => {
+                let barrier = self.rng.gen_range(0..self.n);
+                for idx in 0..barrier {
+                    if p1.get(idx) == 1 { c.set(idx); } else { c.clear(idx); }
+                }
+                for idx in barrier..self.n {
+                    if p2.get(idx) == 1 { c.set(idx); } else { c.clear(idx); }
+                }
+            },
+            CrossoverMethod::DoubleBarrier => {
+                let mut first_barrier = self.rng.gen_range(0..self.n);
+                let mut second_barrier = self.rng.gen_range(0..self.n);
+                while first_barrier == second_barrier { second_barrier = self.rng.gen_range(0..self.n); }
+                
+                if second_barrier < first_barrier { 
+                    let tmp = first_barrier; 
+                    first_barrier = second_barrier; 
+                    second_barrier = tmp; 
+                }
+
+                for idx in 0..first_barrier {
+                    if p1.get(idx) == 1 { c.set(idx); } else { c.clear(idx); }
+                }
+                for idx in first_barrier..second_barrier {
+                    if p2.get(idx) == 1 { c.set(idx); } else { c.clear(idx); }
+                }
+                for idx in second_barrier..self.n {
+                    if p1.get(idx) == 1 { c.set(idx); } else { c.clear(idx); }
+                }
+            },
         }
 
+        // mutation
         for idx in 0..self.n {
             if self.rng.gen_bool(self.mutation_rate) {
                 c.flip(idx);
@@ -243,9 +279,9 @@ mod tests {
             .n(100)
             .mutation_rate(0.1)
             .target(target)
-            .target_type(options::TargetType::MAXIMIZE)
+            .target_type(options::TargetType::Maximize)
             .selection_method(options::SelectionMethod::Weighted)
-            .crossover_method(options::CrossoverMethod::BARRIER)
+            .crossover_method(options::CrossoverMethod::Barrier)
             .build();
 
         assert!(true);
